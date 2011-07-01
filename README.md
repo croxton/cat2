@@ -32,6 +32,7 @@ in your template without additional overhead.
 ##Example use:
 
 category_id from category_url_title:
+
 	{exp:cat2:id category_url_title="my_category" category_group="5"}
 
 category_id from category_name:
