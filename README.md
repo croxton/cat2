@@ -35,18 +35,23 @@ category_id from category_url_title:
 	{exp:cat2:id category_url_title="my_category" category_group="5"}
 
 category_id from category_name:
+
 	{exp:cat2:id category_name="my category" category_group="5"}
 
 category_name from category_id:
+
 	{exp:cat2:name category_id="25" category_group="5"}
 
 category_name from category_url_title:
+
 	{exp:cat2:name category_url_title="my_category" category_group="5"}
 
 category_url_title from category_id:
+
 	{exp:cat2:url_title category_id="25" category_group="5"}
 
 category_url_title from category_name:
+
 	{exp:cat2:url_title category_name="my category" category_group="5"}
 
 Can also be used as a tag pair, e.g.:
