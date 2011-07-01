@@ -18,16 +18,16 @@ in your template without additional overhead.
 2. Move the file pi.cat2.php into the folder
 
 ##Tags:
-{exp:cat2:id}
-{exp:cat2:name}
-{exp:cat2:url_title}
+* {exp:cat2:id}
+* {exp:cat2:name}
+* {exp:cat2:url_title}
 
 ##Parameters:
-category_url_title=
-category_name=
-category_id=
-category_group=
-debug="yes|no"
+* category_url_title=
+* category_name=
+* category_id=
+* category_group=
+* debug="yes|no"
 
 ##Example use:
 
