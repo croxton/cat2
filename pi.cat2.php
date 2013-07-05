@@ -2,7 +2,7 @@
 
 $plugin_info = array(
   'pi_name' => 'Cat2',
-  'pi_version' =>'1.1.0',
+  'pi_version' =>'1.1.1',
   'pi_author' =>'Mark Croxton',
   'pi_author_url' => 'http://www.hallmark-design.co.uk/',
   'pi_description' => 'Convert between category name, category id and category url title',
@@ -33,7 +33,7 @@ class Cat2 {
 		// register parameters
 		$this->category_url_title = strtolower($this->EE->TMPL->fetch_param('category_url_title', ''));
 		$this->category_name = strtolower($this->EE->TMPL->fetch_param('category_name', ''));
-		$this->category_id = $this->EE->TMPL->fetch_param('category_id', '');
+		$this->category_id = preg_replace("/[^0-9]/", '', $this->EE->TMPL->fetch_param('category_id', NULL));
 		$this->category_group = $this->EE->TMPL->fetch_param('category_group', '');
 		$this->_debug = (bool) preg_match('/1|on|yes|y/i', $this->EE->TMPL->fetch_param('debug'));	
 		
@@ -69,7 +69,7 @@ class Cat2 {
 		}
 		else
 		{
-			$key 	= "name";
+			$key 	= "cat_name";
 			$value	 = $this->category_name;
 		}
 		
@@ -173,7 +173,11 @@ class Cat2 {
 			{
 				$this->EE->db->where('group_id', $this->category_group);
 			}
-			if ($results = $this->EE->db->get()) 
+			
+			// run the query
+			$results = $this->EE->db->get();
+			
+			if ($results->num_rows() > 0) 
 			{
 				$this->EE->session->cache[__CLASS__][$col][$value] = $results->row($col);
 			}
