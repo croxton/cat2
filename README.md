@@ -1,4 +1,4 @@
-#cat2
+# Cat2
 
 * Author: [Mark Croxton](http://hallmark-design.co.uk/)
 
@@ -9,62 +9,77 @@
 ## Description
 
 Convert between category name, category id and category url title.
-Query results are cached, so you can use the same tag multiple times 
-in your template without additional overhead. 
+Query results are cached, so you can use the same tag multiple times
+in your template without additional overhead.
 
 ## Installation
 
 1. Create a folder called 'cat2' inside ./system/expressionengine/third_party/
 2. Move the file pi.cat2.php into the folder
 
-##Tags:
-* {exp:cat2:id}
-* {exp:cat2:name}
-* {exp:cat2:url_title}
+## Usage
 
-##Parameters:
-* category_url_title=
-* category_name=
-* category_id=
-* category_group=
-* debug="yes|no"
+### Tags
+```php
+{exp:cat2:id} // Get category_id
+{exp:cat2:name} // Get category_name
+{exp:cat2:url_title} // Get category_url_title
+```
 
-##Example use:
+### Parameters
 
-category_id from category_url_title:
+#### Required
+    category_url_title=
+    category_name=
+    category_id=
 
-	{exp:cat2:id category_url_title="my_category" category_group="5"}
+One of these must be present in order to find the correct category.
 
-category_id from category_name:
+#### Optional
+`category_group=`
 
-	{exp:cat2:id category_name="my category" category_group="5"}
+Filter category results by a specific category group ID, or multiple category group IDs.
 
-category_name from category_id:
+Examples:
+```php
+category_group="2"
+category_group="5|6"
+```
 
-	{exp:cat2:name category_id="25" category_group="5"}
+`debug=`
 
-category_name from category_url_title:
+Output error messages if tag is used incorrectly. Can be "yes" or "no" (default is "no").
 
-	{exp:cat2:name category_url_title="my_category" category_group="5"}
+### Examples
 
-category_url_title from category_id:
+#### Getting category_id
 
-	{exp:cat2:url_title category_id="25" category_group="5"}
+From category_url_title: `{exp:cat2:id category_url_title="my_category"}`
 
-category_url_title from category_name:
+From category_name: `{exp:cat2:id category_name="my category"}`
 
-	{exp:cat2:url_title category_name="my category" category_group="5"}
+#### Getting category_name
 
-Can also be used as a tag pair, e.g.:
+From category_id: `{exp:cat2:name category_id="25"}`
 
-	{exp:cat2:id category_url_title="my_category" category_group="5" parse="inward"}
-		{category_id}
-	{/exp:cat2:id}
+From category_url_title: `{exp:cat2:name category_url_title="my_category"}`
 
-	{exp:cat2:name category_id="25" category_group="5" parse="inward"}
-		{category__name}
-	{/exp:cat2:name}
+#### Getting category_url_title
 
-	{exp:cat2:url_title category_id="25" category_group="5" parse="inward"}
-		{category_url_title}
-	{/exp:cat2:url_title}
+From category_id: `{exp:cat2:url_title category_id="25"}`
+
+From category_name: `{exp:cat2:url_title category_name="my category"}`
+
+#### Can also be used as a tag pair, e.g.:
+
+    {exp:cat2:id category_url_title="my_category" parse="inward"}
+      {category_id}
+    {/exp:cat2:id}
+
+    {exp:cat2:name category_id="25" parse="inward"}
+      {category_name}
+    {/exp:cat2:name}
+
+    {exp:cat2:url_title category_id="25" parse="inward"}
+      {category_url_title}
+    {/exp:cat2:url_title}
