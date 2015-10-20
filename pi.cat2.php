@@ -171,7 +171,14 @@ class Cat2 {
 			
 			if ( ! empty($this->category_group))
 			{
-				$this->EE->db->where('group_id', $this->category_group);
+				if (strpos($this->category_group, '|') !== false)
+				{
+					$this->EE->db->where_in('group_id', explode('|', $this->category_group));
+				}
+				else
+				{
+					$this->EE->db->where('group_id', $this->category_group);
+				}
 			}
 			
 			// run the query
@@ -212,7 +219,7 @@ class Cat2 {
 	}
 
 	// usage instructions
-	function usage() 
+	function usage()
 	{
   		ob_start();
 ?>
@@ -221,52 +228,61 @@ HOW TO USE
 -------------------
 
 Convert between category name, category id and category url title.
-Query results are cached, so you can use the same tag multiple times 
-in your template without additional overhead. 
+Query results are cached, so you can use the same tag multiple times
+in your template without additional overhead.
 
 Tags:
 {exp:cat2:id}
 {exp:cat2:name}
 {exp:cat2:url_title}
 
-Parameters:
+Required Parameters:
 category_url_title=
 category_name=
 category_id=
-category_group=
-debug="yes|no"
+One of these must be present in order to find the correct category.
 
-Example use:
+Optional Parameters:
+category_group=
+Filter category results by a specific category group ID, or multiple category group IDs.
+Examples:
+category_group="2"
+category_group="5|6"
+
+debug=
+Output error messages if tag is used incorrectly. Can be "yes" or "no" (default is "no").
+
+Examples:
 
 category_id from category_url_title:
-{exp:cat2:id category_url_title="my_category" category_group="5"}
+{exp:cat2:id category_url_title="my_category"}
 
 category_id from category_name:
-{exp:cat2:id category_name="my category" category_group="5"}
+{exp:cat2:id category_name="my category"}
 
 category_name from category_id:
-{exp:cat2:name category_id="25" category_group="5"}
+{exp:cat2:name category_id="25"}
 
 category_name from category_url_title:
-{exp:cat2:name category_url_title="my_category" category_group="5"}
+{exp:cat2:name category_url_title="my_category"}
 
 category_url_title from category_id:
-{exp:cat2:url_title category_id="25" category_group="5"}
+{exp:cat2:url_title category_id="25"}
 
 category_url_title from category_name:
-{exp:cat2:url_title category_name="my category" category_group="5"}
+{exp:cat2:url_title category_name="my category"}
 
 Can also be used as a tag pair, e.g.:
 
-{exp:cat2:id category_url_title="my_category" category_group="5" parse="inward"}
+{exp:cat2:id category_url_title="my_category" parse="inward"}
 	{category_id}
 {/exp:cat2:id}
 
-{exp:cat2:name category_id="25" category_group="5" parse="inward"}
-	{category__name}
+{exp:cat2:name category_id="25" parse="inward"}
+	{category_name}
 {/exp:cat2:name}
 
-{exp:cat2:url_title category_id="25" category_group="5" parse="inward"}
+{exp:cat2:url_title category_id="25" parse="inward"}
 	{category_url_title}
 {/exp:cat2:url_title}
 
@@ -275,5 +291,5 @@ Can also be used as a tag pair, e.g.:
 		$buffer = ob_get_contents();
 		ob_end_clean();
 		return $buffer;
-	}	
+	}
 }
