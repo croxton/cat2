@@ -219,7 +219,7 @@ class Cat2 {
 	}
 
 	// usage instructions
-	function usage()
+	public static function usage()
 	{
   		ob_start();
 ?>
