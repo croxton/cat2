@@ -2,9 +2,9 @@
 
 * Author: [Mark Croxton](http://hallmark-design.co.uk/)
 
-## Version 1.1.2
+## Version 2.0.0
 
-* Requires: ExpressionEngine 2
+* Requires: ExpressionEngine 2 or 3
 
 ## Description
 
@@ -14,8 +14,9 @@ in your template without additional overhead.
 
 ## Installation
 
-1. Create a folder called 'cat2' inside ./system/expressionengine/third_party/
-2. Move the file pi.cat2.php into the folder
+1. [Download](https://github.com/croxton/cat2/archive/master.zip) Cat2
+2. Unzip the download and rename the extracted folder `cat2`
+3. Move the folder to `./system/expressionengine/third_party/` (EE2) or `./system/user/addons` (EE3)
 
 ## Usage
 
@@ -29,22 +30,22 @@ in your template without additional overhead.
 ### Parameters
 
 #### Required
-    category_url_title=
-    category_name=
-    category_id=
+```php
+category_url_title=""
+category_name=""
+category_id=""
+```
 
 One of these must be present in order to find the correct category.
 
 #### Optional
 `category_group=`
 
-Filter category results by a specific category group ID, or multiple category group IDs.
+Filter category results by a specific category group ID, or multiple category group IDs separated by `|`.
 
-Examples:
-```php
-category_group="2"
-category_group="5|6"
-```
+`prefix=`
+
+Use the prefix parameter to namespace variables when using as a tag pair.
 
 `debug=`
 
@@ -72,14 +73,24 @@ From category_name: `{exp:cat2:url_title category_name="my category"}`
 
 #### Can also be used as a tag pair, e.g.:
 
-    {exp:cat2:id category_url_title="my_category" parse="inward"}
-      {category_id}
-    {/exp:cat2:id}
+```php
+{exp:cat2:id category_url_title="my_category" parse="inward"}
+  {category_id}
+{/exp:cat2:id}
 
-    {exp:cat2:name category_id="25" parse="inward"}
-      {category_name}
-    {/exp:cat2:name}
+{exp:cat2:name category_id="25" parse="inward"}
+  {category_name}
+{/exp:cat2:name}
 
-    {exp:cat2:url_title category_id="25" parse="inward"}
-      {category_url_title}
-    {/exp:cat2:url_title}
+{exp:cat2:url_title category_id="25" parse="inward"}
+  {category_url_title}
+{/exp:cat2:url_title}
+```
+
+#### Use the prefix parameter to namespace variables:
+
+```php
+{exp:cat2:id category_url_title="my_category" prefix="cat2" parse="inward"}
+  {cat2:category_id}
+{/exp:cat2:id}
+```
