@@ -1,11 +1,11 @@
 <?php
 
 $plugin_info = array(
-  'pi_name' => CAT2_NAME,
-  'pi_version' => CAT2_VER,
-  'pi_author' => CAT2_AUTHOR,
-  'pi_author_url' => CAT2_AUTHOR_URL,
-  'pi_description' => CAT2_DESC,
+  'pi_name' => 'Cat2',
+  'pi_version' => '2.0.1',
+  'pi_author' => 'Mark Croxton, Hallmark Design',
+  'pi_author_url' => 'http://hallmark-design.co.uk',
+  'pi_description' => 'Convert between category name, category id and category url title',
   'pi_usage' => Cat2::usage()
 );
 
