@@ -26,7 +26,7 @@ class Cat2 {
 	 * @access public
 	 * @return void
 	 */
-	function Cat2() 
+	function __construct() 
 	{
 		$this->site = ee()->config->item('site_id');
 		
