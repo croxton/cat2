@@ -4,7 +4,7 @@
 
 ## Version 2.0.1
 
-* Requires: ExpressionEngine 2 or 3
+* Requires: ExpressionEngine 2, 3 or 4
 
 ## Description
 
@@ -16,7 +16,7 @@ in your template without additional overhead.
 
 1. [Download](https://github.com/croxton/cat2/archive/master.zip) Cat2
 2. Unzip the download and rename the extracted folder `cat2`
-3. Move the folder to `./system/expressionengine/third_party/` (EE2) or `./system/user/addons` (EE3)
+3. Move the folder to `./system/expressionengine/third_party/` (EE2) or `./system/user/addons` (EE3/EE4)
 
 ## Usage
 
