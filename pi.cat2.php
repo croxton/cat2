@@ -207,6 +207,8 @@ class Cat2 {
 				{
 					show_error(__CLASS__.' error: category not found.');
 				}
+
+				return ee()->TMPL->no_results();
 			}
 		}
 		
