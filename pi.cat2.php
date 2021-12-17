@@ -10,7 +10,7 @@ $plugin_info = array(
 );
 
 class Cat2 {
-	
+
 	public $return_data = '';
 	public $category_url_title;
 	public $category_id;
@@ -19,14 +19,14 @@ class Cat2 {
 	public $prefix;
 	public $site;
 	private $_debug;
-	
-	/** 
+
+	/**
 	 * Constructor
 	 *
 	 * @access public
 	 * @return void
 	 */
-	function __construct() 
+	function __construct()
 	{
 		$this->site = ee()->TMPL->fetch_param('site_id', ee()->config->item('site_id'));
 
@@ -35,7 +35,7 @@ class Cat2 {
 		$this->category_name = strtolower(ee()->TMPL->fetch_param('category_name', ''));
 		$this->category_id = preg_replace("/[^0-9]/", '', ee()->TMPL->fetch_param('category_id', NULL));
 		$this->category_group = ee()->TMPL->fetch_param('category_group', '');
-		$this->_debug = (bool) preg_match('/1|on|yes|y/i', ee()->TMPL->fetch_param('debug'));	
+		$this->_debug = (bool) preg_match('/1|on|yes|y/i', ee()->TMPL->fetch_param('debug'));
 
 		// add a prefix?
 		$this->prefix = ee()->TMPL->fetch_param('prefix', '');
@@ -43,21 +43,21 @@ class Cat2 {
 		{
 			$this->prefix = $this->prefix . ":";
 		}
-		
+
 		// set up cache
 		if ( ! isset(ee()->session->cache[__CLASS__]))
         {
             ee()->session->cache[__CLASS__] = array();
         }
 	}
-	
-	/** 
+
+	/**
 	 * exp:cat2:id
 	 *
 	 * @access public
 	 * @return string
 	 */
-	function id() 
+	function id()
 	{
 		if (empty($this->category_url_title) && empty($this->category_name))
 		{
@@ -68,7 +68,7 @@ class Cat2 {
 			}
 			return;
 		}
-		
+
 		if (!empty($this->category_url_title))
 		{
 			$key 	= "cat_url_title";
@@ -79,17 +79,17 @@ class Cat2 {
 			$key 	= "cat_name";
 			$value	 = $this->category_name;
 		}
-		
+
 		return $this->cat_query('cat_id', $key, $value);
 	}
-		
-	/** 
+
+	/**
 	 * exp:cat2:name
 	 *
 	 * @access public
 	 * @return string
 	 */
-	function name() 
+	function name()
 	{
 		if (empty($this->category_url_title) && empty($this->category_id))
 		{
@@ -100,7 +100,7 @@ class Cat2 {
 			}
 			return;
 		}
-		
+
 		if ( ! empty($this->category_url_title))
 		{
 			$key 	= "cat_url_title";
@@ -111,17 +111,17 @@ class Cat2 {
 			$key 	= "cat_id";
 			$value	 = $this->category_id;
 		}
-		
+
 		return $this->cat_query('cat_name', $key, $value);
 	}
-	
-	/** 
+
+	/**
 	 * exp:cat2:url_title
 	 *
 	 * @access public
 	 * @return string
 	 */
-	function url_title() 
+	function url_title()
 	{
 		if (empty($this->category_name) && empty($this->category_id))
 		{
@@ -132,7 +132,7 @@ class Cat2 {
 			}
 			return;
 		}
-		
+
 		if ( ! empty($this->category_name))
 		{
 			$key 	= "cat_name";
@@ -143,11 +143,11 @@ class Cat2 {
 			$key 	= "cat_id";
 			$value	 = $this->category_id;
 		}
-		
+
 		return $this->cat_query('cat_url_title', $key, $value);
 	}
-	
-	/** 
+
+	/**
 	 * The main query
 	 *
 	 * @access public
@@ -178,7 +178,7 @@ class Cat2 {
 			{
 				ee()->db->where("LOWER({$key})", $value);
 			}
-			
+
 			if ( ! empty($this->category_group))
 			{
 				if (strpos($this->category_group, '|') !== false)
@@ -190,7 +190,7 @@ class Cat2 {
 					ee()->db->where('group_id', $this->category_group);
 				}
 			}
-			
+
 			// run the query
 			$results = ee()->db->get();
 
@@ -211,10 +211,10 @@ class Cat2 {
 				return ee()->TMPL->no_results();
 			}
 		}
-		
+
 		// is this a tag pair?
 		$tagdata = ee()->TMPL->tagdata;
-	
+
 		if ( ! empty($tagdata))
 		{
 
@@ -231,7 +231,7 @@ class Cat2 {
 	// usage instructions
 	public static function usage()
 	{
-  		ob_start();
+		ob_start();
 ?>
 -------------------
 HOW TO USE
