@@ -28,8 +28,8 @@ class Cat2 {
 	 */
 	function __construct() 
 	{
-		$this->site = ee()->config->item('site_id');
-		
+		$this->site = ee()->TMPL->fetch_param('site_id', ee()->config->item('site_id'));
+
 		// register parameters
 		$this->category_url_title = strtolower(ee()->TMPL->fetch_param('category_url_title', ''));
 		$this->category_name = strtolower(ee()->TMPL->fetch_param('category_name', ''));
@@ -163,8 +163,13 @@ class Cat2 {
 			// query
 			ee()->db->select($col);
 			ee()->db->from('exp_categories');
-			ee()->db->where('site_id', $this->site);
-		
+
+			if ($this->site == 0) {
+					ee()->db->where('site_id !=', $this->site);
+			} else {
+					ee()->db->where('site_id', $this->site);
+			}
+
 			if ($key == 'cat_id')
 			{
 				ee()->db->where($key, $value);
@@ -188,16 +193,16 @@ class Cat2 {
 			
 			// run the query
 			$results = ee()->db->get();
-			
-			if ($results->num_rows() > 0) 
+
+			if ($results->num_rows() > 0)
 			{
-				ee()->session->cache[__CLASS__][$col][$value] = (string) $results->row($col);
+				ee()->session->cache[__CLASS__][$col][$value] = $results->result_array();
 			}
 			else
 			{
 				// fail gracefully
-				ee()->session->cache[__CLASS__][$col][$value] = '';
-				
+				ee()->session->cache[__CLASS__][$col][$value] = array();
+
 				if ($this->_debug)
 				{
 					show_error(__CLASS__.' error: category not found.');
@@ -210,16 +215,14 @@ class Cat2 {
 	
 		if ( ! empty($tagdata))
 		{
-			$data = array(
-				$this->prefix.(str_replace('cat', 'category', $col)) => ee()->session->cache[__CLASS__][$col][$value]
-			);
-			
-			return ee()->TMPL->parse_variables_row($tagdata, $data);
+
+			return ee()->TMPL->parse_variables($tagdata, ee()->session->cache[__CLASS__][$col][$value]);
 		}
 		else
 		{
+			$out = array_column(ee()->session->cache[__CLASS__][$col][$value], $col);
 			// output direct
-			return ee()->session->cache[__CLASS__][$col][$value];
+			return implode('|', $out);
 		}
 	}
 
