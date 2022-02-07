@@ -51,6 +51,10 @@ Use the prefix parameter to namespace variables when using as a tag pair.
 
 Output error messages if tag is used incorrectly. Can be "yes" or "no" (default is "no").
 
+`site_id=`
+
+`site=`
+
 ### Examples
 
 #### Getting category_id

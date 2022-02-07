@@ -1,12 +1,12 @@
 <?php
 
 $plugin_info = array(
-  'pi_name' => 'Cat2',
-  'pi_version' => '2.0.1',
-  'pi_author' => 'Mark Croxton, Hallmark Design',
-  'pi_author_url' => 'http://hallmark-design.co.uk',
-  'pi_description' => 'Convert between category name, category id and category url title',
-  'pi_usage' => Cat2::usage()
+	'pi_name' => 'Cat2',
+	'pi_version' => '2.0.1',
+	'pi_author' => 'Mark Croxton, Hallmark Design',
+	'pi_author_url' => 'http://hallmark-design.co.uk',
+	'pi_description' => 'Convert between category name, category id and category url title',
+	'pi_usage' => Cat2::usage()
 );
 
 class Cat2 {
@@ -28,7 +28,9 @@ class Cat2 {
 	 */
 	function __construct()
 	{
-		$this->site = ee()->TMPL->fetch_param('site_id', ee()->config->item('site_id'));
+		$this->site = !empty(ee()->TMPL->fetch_param('site'))
+			? (ee('Model')->get('Site')->filter('site_name', ee()->TMPL->fetch_param('site'))->fields('site_id')->first()->getId() ?: ee()->config->item('site_id'))
+			: ee()->TMPL->fetch_param('site_id', ee()->config->item('site_id'));
 
 		// register parameters
 		$this->category_url_title = strtolower(ee()->TMPL->fetch_param('category_url_title', ''));
@@ -45,10 +47,9 @@ class Cat2 {
 		}
 
 		// set up cache
-		if ( ! isset(ee()->session->cache[__CLASS__]))
-        {
-            ee()->session->cache[__CLASS__] = array();
-        }
+		if ( ! isset(ee()->session->cache[__CLASS__])) {
+			ee()->session->cache[__CLASS__] = array();
+		}
 	}
 
 	/**
