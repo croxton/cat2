@@ -1,16 +1,16 @@
 <?php
 
 $plugin_info = array(
-  'pi_name' => 'Cat2',
-  'pi_version' => '2.0.1',
-  'pi_author' => 'Mark Croxton, Hallmark Design',
-  'pi_author_url' => 'http://hallmark-design.co.uk',
-  'pi_description' => 'Convert between category name, category id and category url title',
-  'pi_usage' => Cat2::usage()
+	'pi_name' => 'Cat2',
+	'pi_version' => '2.0.1',
+	'pi_author' => 'Mark Croxton, Hallmark Design',
+	'pi_author_url' => 'http://hallmark-design.co.uk',
+	'pi_description' => 'Convert between category name, category id and category url title',
+	'pi_usage' => Cat2::usage()
 );
 
 class Cat2 {
-	
+
 	public $return_data = '';
 	public $category_url_title;
 	public $category_id;
@@ -19,23 +19,25 @@ class Cat2 {
 	public $prefix;
 	public $site;
 	private $_debug;
-	
-	/** 
+
+	/**
 	 * Constructor
 	 *
 	 * @access public
 	 * @return void
 	 */
-	function __construct() 
+	function __construct()
 	{
-		$this->site = ee()->config->item('site_id');
-		
+		$this->site = !empty(ee()->TMPL->fetch_param('site'))
+			? (ee('Model')->get('Site')->filter('site_name', ee()->TMPL->fetch_param('site'))->fields('site_id')->first()->getId() ?: ee()->config->item('site_id'))
+			: ee()->TMPL->fetch_param('site_id', ee()->config->item('site_id'));
+
 		// register parameters
 		$this->category_url_title = strtolower(ee()->TMPL->fetch_param('category_url_title', ''));
 		$this->category_name = strtolower(ee()->TMPL->fetch_param('category_name', ''));
 		$this->category_id = preg_replace("/[^0-9]/", '', ee()->TMPL->fetch_param('category_id', NULL));
 		$this->category_group = ee()->TMPL->fetch_param('category_group', '');
-		$this->_debug = (bool) preg_match('/1|on|yes|y/i', ee()->TMPL->fetch_param('debug'));	
+		$this->_debug = (bool) preg_match('/1|on|yes|y/i', ee()->TMPL->fetch_param('debug'));
 
 		// add a prefix?
 		$this->prefix = ee()->TMPL->fetch_param('prefix', '');
@@ -43,21 +45,20 @@ class Cat2 {
 		{
 			$this->prefix = $this->prefix . ":";
 		}
-		
+
 		// set up cache
-		if ( ! isset(ee()->session->cache[__CLASS__]))
-        {
-            ee()->session->cache[__CLASS__] = array();
-        }
+		if ( ! isset(ee()->session->cache[__CLASS__])) {
+			ee()->session->cache[__CLASS__] = array();
+		}
 	}
-	
-	/** 
+
+	/**
 	 * exp:cat2:id
 	 *
 	 * @access public
 	 * @return string
 	 */
-	function id() 
+	function id()
 	{
 		if (empty($this->category_url_title) && empty($this->category_name))
 		{
@@ -68,7 +69,7 @@ class Cat2 {
 			}
 			return;
 		}
-		
+
 		if (!empty($this->category_url_title))
 		{
 			$key 	= "cat_url_title";
@@ -79,17 +80,17 @@ class Cat2 {
 			$key 	= "cat_name";
 			$value	 = $this->category_name;
 		}
-		
+
 		return $this->cat_query('cat_id', $key, $value);
 	}
-		
-	/** 
+
+	/**
 	 * exp:cat2:name
 	 *
 	 * @access public
 	 * @return string
 	 */
-	function name() 
+	function name()
 	{
 		if (empty($this->category_url_title) && empty($this->category_id))
 		{
@@ -100,7 +101,7 @@ class Cat2 {
 			}
 			return;
 		}
-		
+
 		if ( ! empty($this->category_url_title))
 		{
 			$key 	= "cat_url_title";
@@ -111,17 +112,17 @@ class Cat2 {
 			$key 	= "cat_id";
 			$value	 = $this->category_id;
 		}
-		
+
 		return $this->cat_query('cat_name', $key, $value);
 	}
-	
-	/** 
+
+	/**
 	 * exp:cat2:url_title
 	 *
 	 * @access public
 	 * @return string
 	 */
-	function url_title() 
+	function url_title()
 	{
 		if (empty($this->category_name) && empty($this->category_id))
 		{
@@ -132,7 +133,7 @@ class Cat2 {
 			}
 			return;
 		}
-		
+
 		if ( ! empty($this->category_name))
 		{
 			$key 	= "cat_name";
@@ -143,11 +144,11 @@ class Cat2 {
 			$key 	= "cat_id";
 			$value	 = $this->category_id;
 		}
-		
+
 		return $this->cat_query('cat_url_title', $key, $value);
 	}
-	
-	/** 
+
+	/**
 	 * The main query
 	 *
 	 * @access public
@@ -163,8 +164,13 @@ class Cat2 {
 			// query
 			ee()->db->select($col);
 			ee()->db->from('exp_categories');
-			ee()->db->where('site_id', $this->site);
-		
+
+			if ($this->site == 0) {
+					ee()->db->where('site_id !=', $this->site);
+			} else {
+					ee()->db->where('site_id', $this->site);
+			}
+
 			if ($key == 'cat_id')
 			{
 				ee()->db->where($key, $value);
@@ -173,7 +179,7 @@ class Cat2 {
 			{
 				ee()->db->where("LOWER({$key})", $value);
 			}
-			
+
 			if ( ! empty($this->category_group))
 			{
 				if (strpos($this->category_group, '|') !== false)
@@ -185,48 +191,48 @@ class Cat2 {
 					ee()->db->where('group_id', $this->category_group);
 				}
 			}
-			
+
 			// run the query
 			$results = ee()->db->get();
-			
-			if ($results->num_rows() > 0) 
+
+			if ($results->num_rows() > 0)
 			{
-				ee()->session->cache[__CLASS__][$col][$value] = (string) $results->row($col);
+				ee()->session->cache[__CLASS__][$col][$value] = $results->result_array();
 			}
 			else
 			{
 				// fail gracefully
-				ee()->session->cache[__CLASS__][$col][$value] = '';
-				
+				ee()->session->cache[__CLASS__][$col][$value] = array();
+
 				if ($this->_debug)
 				{
 					show_error(__CLASS__.' error: category not found.');
 				}
+
+				return ee()->TMPL->no_results();
 			}
 		}
-		
+
 		// is this a tag pair?
 		$tagdata = ee()->TMPL->tagdata;
-	
+
 		if ( ! empty($tagdata))
 		{
-			$data = array(
-				$this->prefix.(str_replace('cat', 'category', $col)) => ee()->session->cache[__CLASS__][$col][$value]
-			);
-			
-			return ee()->TMPL->parse_variables_row($tagdata, $data);
+
+			return ee()->TMPL->parse_variables($tagdata, ee()->session->cache[__CLASS__][$col][$value]);
 		}
 		else
 		{
+			$out = array_column(ee()->session->cache[__CLASS__][$col][$value], $col);
 			// output direct
-			return ee()->session->cache[__CLASS__][$col][$value];
+			return implode('|', $out);
 		}
 	}
 
 	// usage instructions
 	public static function usage()
 	{
-  		ob_start();
+		ob_start();
 ?>
 -------------------
 HOW TO USE
